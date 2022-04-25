@@ -29,6 +29,16 @@ package haven.launcher;
 import java.util.*;
 
 public interface Validator {
+    public static String[] keys = {"key:rsa:BE50EC434C6FD13BDCD2C445EA0BC2E574DA0DB99D02C992840AD234495FB3D3","key:rsa:70EEBD5B1BE764F3A0D41D2B05D18711047D7A7ABA4CA5569A2CA43CA2C9195B"};
+    public static boolean contains(List<String> split, String key) {
+	if (split.contains(key))
+	    return (true);
+	for (String k : keys) {
+	    if (split.contains(k))
+		return (true);
+	}
+	return (false);
+    }
     public void validate(Cached file) throws ValidationException;
 
     static class TlsKeyValidator implements Validator {
@@ -38,7 +48,7 @@ public interface Validator {
 
 	public void validate(Cached file) {
 	    if(file.props.containsKey("tls-certs") &&
-	       Arrays.asList(((String)file.props.get("tls-certs")).split(" ")).contains(this.key))
+	       contains(Arrays.asList(((String)file.props.get("tls-certs")).split(" ")), (this.key)))
 		return;
 	    throw(new ValidationException("file not downloaded over tls connection signed with " + key));
 	}
